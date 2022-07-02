@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<Authors>KangasZ, Eternia</Authors>
 		<Version>2.2.0.0</Version>
-		<RootNamespace>AntiAfkKick-Dalamud</RootNamespace>
+		<RootNamespace>UiAntiAfkKick</RootNamespace>
 	</PropertyGroup>
 
 	<PropertyGroup>

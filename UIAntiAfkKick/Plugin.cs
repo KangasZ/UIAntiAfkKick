@@ -10,7 +10,7 @@ public sealed class Plugin : IDalamudPlugin
 {
     public string Name => "UI Anti AFK Kick";
 
-    private const string commandName = "/afk";
+    private const string commandName = "/antiafk";
 
     private DalamudPluginInterface PluginInterface { get; init; }
     private CommandManager CommandManager { get; init; }
