@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<Authors>KangasZ, Eternia</Authors>
-		<Version>2.2.0.0</Version>
+		<Authors>KangasZ</Authors>
+		<Version>3.0.0.0</Version>
 		<RootNamespace>UiAntiAfkKick</RootNamespace>
 	</PropertyGroup>
 
@@ -15,7 +15,6 @@
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputPath>bin\$(Configuration)\</OutputPath>
-		<NoWarn>CS1591</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup Label="Documentation">
@@ -61,6 +60,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="bin\Debug\AntiAfkKick-Dalamud.json" />
+	  <None Include="bin\Debug\UiAntiAfkKick.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="bin\Debug" />
 	</ItemGroup>
 </Project>

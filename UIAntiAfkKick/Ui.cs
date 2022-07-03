@@ -8,7 +8,7 @@ class Ui : IDisposable
 {
     private Configuration configuration;
 
-    private ImGuiScene.TextureWrap goatImage;
+    //private ImGuiScene.TextureWrap goatImage;
 
     // this extra bool exists for ImGui, since you can't ref a property
     private bool visible = false;
@@ -26,15 +26,15 @@ class Ui : IDisposable
     }
 
     // passing in the image here just for simplicity
-    public Ui(Configuration configuration, ImGuiScene.TextureWrap goatImage)
+    public Ui(Configuration configuration)
     {
         this.configuration = configuration;
-        this.goatImage = goatImage;
+        //this.goatImage = goatImage;
     }
 
     public void Dispose()
     {
-        this.goatImage.Dispose();
+        //goatImage.Dispose();
     }
 
     public void Draw()
@@ -72,7 +72,7 @@ class Ui : IDisposable
 
             ImGui.Text("Have a goat:");
             ImGui.Indent(55);
-            ImGui.Image(this.goatImage.ImGuiHandle, new Vector2(this.goatImage.Width, this.goatImage.Height));
+            //ImGui.Image(this.goatImage.ImGuiHandle, new Vector2(this.goatImage.Width, this.goatImage.Height));
             ImGui.Unindent(55);
         }
         ImGui.End();

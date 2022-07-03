@@ -58,7 +58,7 @@ public unsafe class AntiAfkKick : IDisposable
                 try
                 {
                     PluginLog.Debug($"Afk timers: {*AfkTimer}/{*AfkTimer2}/{*AfkTimer3}");
-                    if (Max(*AfkTimer, *AfkTimer2, *AfkTimer3) > 2f * 60f)
+                    if (Max(*AfkTimer, *AfkTimer2, *AfkTimer3) > 2f * 10f) // TODO: Change this because 20s isnt enough
                     {
                         if (Native.TryFindGameWindow(out var mwh))
                         {
