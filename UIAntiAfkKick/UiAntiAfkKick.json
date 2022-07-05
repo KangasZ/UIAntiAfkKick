@@ -1,8 +1,8 @@
 ﻿{
   "Name": "AntiAfkKick UI Edition",
-  "Author": "KangasZ / Eternita",
+  "Author": "KangasZ",
   "Description": "A Dalamud plugin for preventing being auto-kicked from FFXIV due to inactivity. Install and forget, no config needed. Slash command /antiafk",
   "RepoUrl": "https://github.com/-S/AntiAfkKick",
   "PunchLine": "Never get kicked via-afk!",
-  "InternalName": "UiAntiAfkKick",
+  "InternalName": "UiAntiAfkKick"
 }

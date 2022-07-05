@@ -45,7 +45,6 @@ public sealed class Plugin : IDalamudPlugin
 
     public void Dispose()
     {
-        PluginUi.Dispose();
         CommandManager.RemoveHandler(commandName);
         afkThread.Dispose();
     }

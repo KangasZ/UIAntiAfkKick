@@ -42,7 +42,6 @@ namespace UiAntiAfkKick
 		[PluginService] static internal ObjectTable Objects { get; private set; }
 		[PluginService] static internal PartyFinderGui PfGui { get; private set; }
 		[PluginService] static internal PartyList Party { get; private set; }
-		[PluginService] static internal SeStringManager SeStringManager { get; private set; }
 		[PluginService] static internal SigScanner SigScanner { get; private set; }
 		[PluginService] static internal TargetManager Targets { get; private set; }
 		[PluginService] static internal ToastGui Toasts { get; private set; }

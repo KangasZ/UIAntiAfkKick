@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace UiAntiAfkKick;
 
-class Ui : IDisposable
+class Ui
 {
     private Configuration configuration;
 
@@ -21,8 +21,8 @@ class Ui : IDisposable
     private bool settingsVisible = false;
     public bool SettingsVisible
     {
-        get { return this.settingsVisible; }
-        set { this.settingsVisible = value; }
+        get { return settingsVisible; }
+        set { settingsVisible = value; }
     }
 
     // passing in the image here just for simplicity
@@ -30,11 +30,6 @@ class Ui : IDisposable
     {
         this.configuration = configuration;
         //this.goatImage = goatImage;
-    }
-
-    public void Dispose()
-    {
-        //goatImage.Dispose();
     }
 
     public void Draw()
@@ -72,7 +67,6 @@ class Ui : IDisposable
 
             ImGui.Text("Have a goat:");
             ImGui.Indent(55);
-            //ImGui.Image(this.goatImage.ImGuiHandle, new Vector2(this.goatImage.Width, this.goatImage.Height));
             ImGui.Unindent(55);
         }
         ImGui.End();
