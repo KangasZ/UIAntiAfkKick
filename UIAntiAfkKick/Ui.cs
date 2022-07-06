@@ -42,7 +42,6 @@ class Ui
         // draw delegates as low as possible.
 
         DrawMainWindow();
-        DrawSettingsWindow();
     }
 
     public void DrawMainWindow()
@@ -54,43 +53,22 @@ class Ui
 
         ImGui.SetNextWindowSize(new Vector2(375, 330), ImGuiCond.FirstUseEver);
         ImGui.SetNextWindowSizeConstraints(new Vector2(375, 330), new Vector2(float.MaxValue, float.MaxValue));
-        if (ImGui.Begin("My Amazing Window", ref this.visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
+        if (ImGui.Begin("Anti AFK Kick", ref this.visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
         {
-            ImGui.Text($"The random config bool is {this.configuration.SomePropertyToBeSavedAndWithADefault}");
+            ImGui.Text("UI Anti Afk Kick is a modification on EterniaS AntiAfkKick for the purpose of practice and dungeons.");
+            ImGui.Spacing();
+            ImGui.Text($"Plugin Enabled: {configuration.Enabled}");
 
-            if (ImGui.Button("Show Settings"))
+            // can't ref a property, so use a local copy
+            var configValue = configuration.Enabled;
+            if (ImGui.Checkbox("Enable", ref configValue))
             {
-                SettingsVisible = true;
+                configuration.Enabled = configValue;
+                // can save immediately on change, if you don't want to provide a "Save and Close" button
+                configuration.Save();
             }
 
             ImGui.Spacing();
-
-            ImGui.Text("Have a goat:");
-            ImGui.Indent(55);
-            ImGui.Unindent(55);
-        }
-        ImGui.End();
-    }
-
-    public void DrawSettingsWindow()
-    {
-        if (!SettingsVisible)
-        {
-            return;
-        }
-
-        ImGui.SetNextWindowSize(new Vector2(232, 75), ImGuiCond.Always);
-        if (ImGui.Begin("A Wonderful Configuration Window", ref this.settingsVisible,
-            ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
-        {
-            // can't ref a property, so use a local copy
-            var configValue = this.configuration.SomePropertyToBeSavedAndWithADefault;
-            if (ImGui.Checkbox("Random Config Bool", ref configValue))
-            {
-                this.configuration.SomePropertyToBeSavedAndWithADefault = configValue;
-                // can save immediately on change, if you don't want to provide a "Save and Close" button
-                this.configuration.Save();
-            }
         }
         ImGui.End();
     }

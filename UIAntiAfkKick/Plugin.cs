@@ -1,8 +1,14 @@
 ﻿using Dalamud.Game.Command;
 using Dalamud.IoC;
 using Dalamud.Plugin;
-using System.IO;
-using System.Reflection;
+using Dalamud.Logging;
+using Dalamud.Plugin.Ipc;
+using System;
+using System.Dynamic;
+using Dalamud.Game.Command;
+using Dalamud.Game.Gui.Dtr;
+using Dalamud.Game.Network;
+
 
 namespace UiAntiAfkKick;
 
@@ -32,23 +38,24 @@ public sealed class Plugin : IDalamudPlugin
         // you might normally want to embed resources and load them from the manifest stream
         PluginUi = new Ui(Configuration);
 
-        CommandManager.AddHandler(commandName, new CommandInfo(SettingsCommand)
+        CommandManager.AddHandler("/antiafk", new CommandInfo(SettingsCommand)
         {
-            HelpMessage = "A useful message to display in /xlhelp"
+            HelpMessage = "Opens configuration for anti afk plugin",
+            ShowInHelp = true
         });
         
         PluginInterface.UiBuilder.Draw += DrawUI;
-        PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+        PluginInterface.UiBuilder.OpenConfigUi += DrawUI;
         
         afkThread = new AntiAfkKick(pluginInterface);
     }
 
     public void Dispose()
     {
-        CommandManager.RemoveHandler(commandName);
+        CommandManager.RemoveHandler("/antiafk");
         afkThread.Dispose();
     }
-
+    
     private void SettingsCommand(string command, string args)
     {
         // in response to the slash command, just display our main ui
@@ -58,10 +65,5 @@ public sealed class Plugin : IDalamudPlugin
     private void DrawUI()
     {
         PluginUi.Draw();
-    }
-
-    private void DrawConfigUI()
-    {
-        PluginUi.SettingsVisible = true;
     }
 }

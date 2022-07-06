@@ -9,8 +9,7 @@ public class Configuration : IPluginConfiguration
 {
     public int Version { get; set; } = 0;
 
-    public bool SomePropertyToBeSavedAndWithADefault { get; set; } = true;
-
+    public bool Enabled { get; set; } = true;
     // the below exist just to make saving less cumbersome
 
     [NonSerialized]
@@ -23,6 +22,6 @@ public class Configuration : IPluginConfiguration
 
     public void Save()
     {
-        this.pluginInterface!.SavePluginConfig(this);
+        pluginInterface!.SavePluginConfig(this);
     }
 }
