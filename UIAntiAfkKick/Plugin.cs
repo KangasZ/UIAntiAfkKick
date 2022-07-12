@@ -6,6 +6,7 @@ using Dalamud.Plugin.Ipc;
 using System;
 using System.Dynamic;
 using Dalamud.Game.Command;
+using Dalamud.Game.Gui.ContextMenus;
 using Dalamud.Game.Gui.Dtr;
 using Dalamud.Game.Network;
 
@@ -45,7 +46,7 @@ public sealed class Plugin : IDalamudPlugin
         });
         
         PluginInterface.UiBuilder.Draw += DrawUI;
-        PluginInterface.UiBuilder.OpenConfigUi += DrawUI;
+        PluginInterface.UiBuilder.OpenConfigUi += OpenUI;
         
         afkThread = new AntiAfkKick(pluginInterface);
     }
@@ -59,11 +60,16 @@ public sealed class Plugin : IDalamudPlugin
     private void SettingsCommand(string command, string args)
     {
         // in response to the slash command, just display our main ui
-        PluginUi.Visible = true;
+        OpenUI();
     }
 
     private void DrawUI()
     {
         PluginUi.Draw();
+    }
+
+    private void OpenUI()
+    {
+        PluginUi.Visible = true;
     }
 }
