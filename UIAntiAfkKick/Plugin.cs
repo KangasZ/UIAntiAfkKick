@@ -19,10 +19,10 @@ public sealed class Plugin : IDalamudPlugin
 
     private const string commandName = "/antiafk";
 
-    private DalamudPluginInterface PluginInterface { get; init; }
-    private CommandManager CommandManager { get; init; }
-    private Configuration Configuration { get; init; }
-    private Ui PluginUi { get; init; }
+    private DalamudPluginInterface pluginInterface { get; init; }
+    private CommandManager commandManager { get; init; }
+    private Configuration configInterface { get; }
+    private Ui pluginUi { get; }
     private AntiAfkKick afkThread;
     
     
@@ -30,46 +30,46 @@ public sealed class Plugin : IDalamudPlugin
         [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
         [RequiredVersion("1.0")] CommandManager commandManager)
     {
-        PluginInterface = pluginInterface;
-        CommandManager = commandManager;
+        this.pluginInterface = pluginInterface;
+        this.commandManager = commandManager;
 
-        Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-        Configuration.Initialize(PluginInterface);
+        configInterface = this.pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        configInterface.Initialize(this.pluginInterface);
 
         // you might normally want to embed resources and load them from the manifest stream
-        PluginUi = new Ui(Configuration);
+        pluginUi = new Ui(configInterface);
 
-        CommandManager.AddHandler("/antiafk", new CommandInfo(SettingsCommand)
+        this.commandManager.AddHandler("/antiafk", new CommandInfo(SettingsCommand)
         {
             HelpMessage = "Opens configuration for anti afk plugin",
             ShowInHelp = true
         });
         
-        PluginInterface.UiBuilder.Draw += DrawUI;
-        PluginInterface.UiBuilder.OpenConfigUi += OpenUI;
+        this.pluginInterface.UiBuilder.Draw += DrawUi;
+        this.pluginInterface.UiBuilder.OpenConfigUi += OpenUi;
         
-        afkThread = new AntiAfkKick(pluginInterface);
+        afkThread = new AntiAfkKick(pluginInterface, configInterface);
     }
 
     public void Dispose()
     {
-        CommandManager.RemoveHandler("/antiafk");
+        commandManager.RemoveHandler("/antiafk");
         afkThread.Dispose();
     }
     
     private void SettingsCommand(string command, string args)
     {
         // in response to the slash command, just display our main ui
-        OpenUI();
+        OpenUi();
     }
 
-    private void DrawUI()
+    private void DrawUi()
     {
-        PluginUi.Draw();
+        pluginUi.Draw();
     }
 
-    private void OpenUI()
+    private void OpenUi()
     {
-        PluginUi.Visible = true;
+        pluginUi.Visible = true;
     }
 }

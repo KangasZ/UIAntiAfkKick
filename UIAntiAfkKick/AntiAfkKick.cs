@@ -18,10 +18,13 @@ public unsafe class AntiAfkKick : IDisposable
 {
     internal volatile bool running = true;
     //long NextKeyPress = 0;
-    IntPtr BaseAddress = IntPtr.Zero;
-    float* AfkTimer;
-    float* AfkTimer2;
-    float* AfkTimer3;
+    private IntPtr baseAddress = IntPtr.Zero;
+    private float* afkTimer;
+    private float* afkTimer2;
+    private float* afkTimer3;
+
+    private DalamudPluginInterface pluginInterface { get; set; }
+    private Configuration configInterface { get; set; }
 
     delegate long UnkFunc(IntPtr a1, float a2);
     Hook<UnkFunc> UnkFuncHook;
@@ -39,8 +42,10 @@ public unsafe class AntiAfkKick : IDisposable
         running = false;
     }
 
-    public AntiAfkKick(DalamudPluginInterface pluginInterface)
+    public AntiAfkKick(DalamudPluginInterface pluginInterface, Configuration configuration)
     {
+        this.pluginInterface = pluginInterface;
+        this.configInterface = configuration;
         pluginInterface.Create<Svc>();
         UnkFuncHook = new(Svc.SigScanner.ScanText("48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55"), UnkFunc_Dtr);
         UnkFuncHook.Enable();
@@ -48,21 +53,21 @@ public unsafe class AntiAfkKick : IDisposable
 
     void BeginWork()
     {
-        AfkTimer = (float*)(BaseAddress + 20);
-        AfkTimer2 = (float*)(BaseAddress + 24);
-        AfkTimer3 = (float*)(BaseAddress + 28);
+        afkTimer = (float*)(baseAddress + 20);
+        afkTimer2 = (float*)(baseAddress + 24);
+        afkTimer3 = (float*)(baseAddress + 28);
         new Thread((ThreadStart)delegate
         {
             while (running)
             {
                 try
                 {
-                    PluginLog.Debug($"Afk timers: {*AfkTimer}/{*AfkTimer2}/{*AfkTimer3}");
-                    if (Max(*AfkTimer, *AfkTimer2, *AfkTimer3) > 2f * 10f) // TODO: Change this because 20s isnt enough
+                    PluginLog.Debug($"Afk timers: {*afkTimer}/{*afkTimer2}/{*afkTimer3}");
+                    if (Max(*afkTimer, *afkTimer2, *afkTimer3) > configInterface.Seconds)
                     {
                         if (Native.TryFindGameWindow(out var mwh))
                         {
-                            PluginLog.Debug($"Afk timer before: {*AfkTimer}/{*AfkTimer2}/{*AfkTimer3}");
+                            PluginLog.Debug($"Afk timer before: {*afkTimer}/{*afkTimer2}/{*afkTimer3}");
                             PluginLog.Debug($"Sending anti-afk keypress: {mwh:X16}");
                             new TickScheduler(delegate
                             {
@@ -70,7 +75,7 @@ public unsafe class AntiAfkKick : IDisposable
                                 new TickScheduler(delegate
                                 {
                                     SendMessage(mwh, WM_KEYUP, (IntPtr)LControlKey, (IntPtr)0);
-                                    PluginLog.Debug($"Afk timer after: {*AfkTimer}/{*AfkTimer2}/{*AfkTimer3}");
+                                    PluginLog.Debug($"Afk timer after: {*afkTimer}/{*afkTimer2}/{*afkTimer3}");
                                 }, Svc.Framework, 200);
                             }, Svc.Framework, 0);
                         }
@@ -92,8 +97,8 @@ public unsafe class AntiAfkKick : IDisposable
 
     long UnkFunc_Dtr(IntPtr a1, float a2)
     {
-        BaseAddress = a1;
-        PluginLog.Information($"Obtained base address: {BaseAddress:X16}");
+        baseAddress = a1;
+        PluginLog.Information($"Obtained base address: {baseAddress:X16}");
         new TickScheduler(delegate 
         {
             if (!UnkFuncHook.IsDisposed)

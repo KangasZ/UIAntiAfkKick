@@ -6,7 +6,7 @@ namespace UiAntiAfkKick;
 
 class Ui
 {
-    private Configuration configuration;
+    private Configuration configuration { get; set; }
 
     //private ImGuiScene.TextureWrap goatImage;
 
@@ -52,12 +52,16 @@ class Ui
         }
 
         ImGui.SetNextWindowSize(new Vector2(375, 330), ImGuiCond.FirstUseEver);
-        ImGui.SetNextWindowSizeConstraints(new Vector2(375, 330), new Vector2(float.MaxValue, float.MaxValue));
-        if (ImGui.Begin("Anti AFK Kick", ref this.visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
+        ImGui.SetNextWindowSizeConstraints(new Vector2(390, 330), new Vector2(float.MaxValue, float.MaxValue));
+        if (ImGui.Begin("Anti AFK Kick", ref visible,
+                ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoResize))
         {
-            ImGui.Text("UI Anti Afk Kick is a modification on EterniaS AntiAfkKick for the purpose of practice and dungeons.");
+            ImGui.Text(
+                "UI Anti Afk Kick is a modification on EterniaS AntiAfkKick\n" +
+                "The purpose is to function better in dungeons and raids.\n" +
+                "No more \"wiggle checks\" mid-raid!");
             ImGui.Spacing();
-            ImGui.Text($"Plugin Enabled: {configuration.Enabled}");
+            ImGui.Text($"Plugin Enabled: {configuration.Enabled} (This doesnt actually work rn)");
 
             // can't ref a property, so use a local copy
             var configValue = configuration.Enabled;
@@ -65,6 +69,13 @@ class Ui
             {
                 configuration.Enabled = configValue;
                 // can save immediately on change, if you don't want to provide a "Save and Close" button
+                configuration.Save();
+            }
+
+            var seconds = (int)configuration.Seconds;
+            if (ImGui.InputInt("Seconds Between Inputs", ref seconds))
+            {
+                configuration.Seconds = seconds;
                 configuration.Save();
             }
 
