@@ -74,7 +74,7 @@ public unsafe class AntiAfkKick : IDisposable
                             PluginLog.Error("Could not find game window");
                         }
                     }
-                    Thread.Sleep(1000);
+                    Thread.Sleep((int)(1000 * (configInterface.Seconds+1)));
                 }
                 catch (Exception e)
                 {
