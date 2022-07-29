@@ -1,17 +1,10 @@
-﻿using UiAntiAfkKick;
-using Dalamud.Game.ClientState.Keys;
-using Dalamud.Hooking;
+﻿using Dalamud.Hooking;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using static UiAntiAfkKick.Native.Keypress;
+using UiAntiAfkKick.Helpers;
 
 namespace UiAntiAfkKick;
 public unsafe class AntiAfkKick : IDisposable
@@ -22,12 +15,24 @@ public unsafe class AntiAfkKick : IDisposable
     private float* afkTimer;
     private float* afkTimer2;
     private float* afkTimer3;
-
+    private const int LControlKey = 162;
+    private const int Space = 32;
+    private const uint WM_KEYUP = 0x101;
+    private const uint WM_KEYDOWN = 0x100;
     private DalamudPluginInterface pluginInterface { get; set; }
     private Configuration configInterface { get; set; }
 
     delegate long UnkFunc(IntPtr a1, float a2);
     Hook<UnkFunc> UnkFuncHook;
+
+    public AntiAfkKick(DalamudPluginInterface pluginInterface, Configuration configuration)
+    {
+        this.pluginInterface = pluginInterface;
+        this.configInterface = configuration;
+        pluginInterface.Create<Svc>();
+        UnkFuncHook = new(Svc.SigScanner.ScanText("48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55"), UnkFunc_Dtr);
+        UnkFuncHook.Enable();
+    }
 
     public void Dispose()
     {
@@ -41,17 +46,8 @@ public unsafe class AntiAfkKick : IDisposable
         }
         running = false;
     }
-
-    public AntiAfkKick(DalamudPluginInterface pluginInterface, Configuration configuration)
-    {
-        this.pluginInterface = pluginInterface;
-        this.configInterface = configuration;
-        pluginInterface.Create<Svc>();
-        UnkFuncHook = new(Svc.SigScanner.ScanText("48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55"), UnkFunc_Dtr);
-        UnkFuncHook.Enable();
-    }
-
-    void BeginWork()
+    
+    private void BeginWork()
     {
         afkTimer = (float*)(baseAddress + 20);
         afkTimer2 = (float*)(baseAddress + 24);
@@ -65,26 +61,20 @@ public unsafe class AntiAfkKick : IDisposable
                     PluginLog.Debug($"Afk timers: {*afkTimer}/{*afkTimer2}/{*afkTimer3}");
                     if (Max(*afkTimer, *afkTimer2, *afkTimer3) > configInterface.Seconds)
                     {
-                        if (Native.TryFindGameWindow(out var mwh))
+                        if (EventsInterface.TryFindGameWindow(out var mwh))
                         {
                             PluginLog.Debug($"Afk timer before: {*afkTimer}/{*afkTimer2}/{*afkTimer3}");
                             PluginLog.Debug($"Sending anti-afk keypress: {mwh:X16}");
-                            new TickScheduler(delegate
-                            {
-                                SendMessage(mwh, WM_KEYDOWN, (IntPtr)LControlKey, (IntPtr)0);
-                                new TickScheduler(delegate
-                                {
-                                    SendMessage(mwh, WM_KEYUP, (IntPtr)LControlKey, (IntPtr)0);
-                                    PluginLog.Debug($"Afk timer after: {*afkTimer}/{*afkTimer2}/{*afkTimer3}");
-                                }, Svc.Framework, 200);
-                            }, Svc.Framework, 0);
+                            EventsInterface.SendKeystroke(mwh, LControlKey, 200, WM_KEYDOWN, WM_KEYUP);
+                            PluginLog.Debug($"Afk timer after: {*afkTimer}/{*afkTimer2}/{*afkTimer3}");
+
                         }
                         else
                         {
                             PluginLog.Error("Could not find game window");
                         }
                     }
-                    Thread.Sleep(10000);
+                    Thread.Sleep(1000);
                 }
                 catch (Exception e)
                 {
@@ -95,7 +85,7 @@ public unsafe class AntiAfkKick : IDisposable
         }).Start();
     }
 
-    long UnkFunc_Dtr(IntPtr a1, float a2)
+    private long UnkFunc_Dtr(IntPtr a1, float a2)
     {
         baseAddress = a1;
         PluginLog.Information($"Obtained base address: {baseAddress:X16}");
@@ -115,7 +105,7 @@ public unsafe class AntiAfkKick : IDisposable
         return UnkFuncHook.Original(a1, a2);
     }
 
-    public static float Max(params float[] values)
+    private static float Max(params float[] values)
     {
         return values.Max();
     }

@@ -1,14 +1,6 @@
 ﻿using Dalamud.Game.Command;
 using Dalamud.IoC;
 using Dalamud.Plugin;
-using Dalamud.Logging;
-using Dalamud.Plugin.Ipc;
-using System;
-using System.Dynamic;
-using Dalamud.Game.Command;
-using Dalamud.Game.Gui.ContextMenus;
-using Dalamud.Game.Gui.Dtr;
-using Dalamud.Game.Network;
 
 
 namespace UiAntiAfkKick;
@@ -47,7 +39,6 @@ public sealed class Plugin : IDalamudPlugin
         
         this.pluginInterface.UiBuilder.Draw += DrawUi;
         this.pluginInterface.UiBuilder.OpenConfigUi += OpenUi;
-        
         afkThread = new AntiAfkKick(pluginInterface, configInterface);
     }
 
