@@ -28,7 +28,7 @@ public unsafe class AntiAfkKick : IDisposable
     public AntiAfkKick(DalamudPluginInterface pluginInterface, Configuration configuration)
     {
         this.pluginInterface = pluginInterface;
-        this.configInterface = configuration;
+        configInterface = configuration;
         pluginInterface.Create<Svc>();
         UnkFuncHook = new(Svc.SigScanner.ScanText("48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55"), UnkFunc_Dtr);
         UnkFuncHook.Enable();
