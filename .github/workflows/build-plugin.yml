@@ -40,7 +40,7 @@ jobs:
 
       - name: Extract Publish
         run: |
-          Get-Item -Path ./UIAntiAfkKick/bin/Release/* | Move-Item -Destination ./Artifact/
+          mv ./UIAntiAfkKick/bin/Release/* ./Artifact/
           
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2.2.1
