@@ -38,11 +38,7 @@ jobs:
       - name: Build
         run: msbuild AntiAfkKick.sln /p:Configuration=Release
 
-      - name: Extract Publish
-        run: |
-          mv ./UIAntiAfkKick/bin/Release/* ./Artifact/
-          
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2.2.1
         with:
-          path: ./Artifact/*
+          path: ./UIAntiAfkKick/bin/Release/*
