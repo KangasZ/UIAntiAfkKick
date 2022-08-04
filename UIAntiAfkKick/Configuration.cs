@@ -12,6 +12,8 @@ public class Configuration : IPluginConfiguration
     public bool Enabled { get; set; } = true;
     
     public float Seconds { get; set; } = 30f;
+
+    public bool Instance { get; set; } = false;
     // the below exist just to make saving less cumbersome
 
     [NonSerialized]

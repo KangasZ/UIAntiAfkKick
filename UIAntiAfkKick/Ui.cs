@@ -71,10 +71,18 @@ class Ui
                 configuration.Save();
             }
 
-            var seconds = (int)configuration.Seconds;
-            if (ImGui.InputInt("Seconds Between Inputs", ref seconds))
+            var seconds = configuration.Seconds;
+            if (ImGui.SliderFloat("Seconds Between Inputs", ref seconds, (float)0.1, 600))
             {
                 configuration.Seconds = seconds;
+                configuration.Save();
+            }
+
+            var instance = configuration.Instance;
+            if (ImGui.Checkbox("Only In Instance", ref instance))
+            {
+                configuration.Instance = instance;
+                // can save immediately on change, if you don't want to provide a "Save and Close" button
                 configuration.Save();
             }
 

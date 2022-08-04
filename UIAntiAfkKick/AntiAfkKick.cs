@@ -4,6 +4,7 @@ using Dalamud.Plugin;
 using System;
 using System.Linq;
 using System.Threading;
+using Dalamud.Game.ClientState.Conditions;
 using UiAntiAfkKick.Helpers;
 
 namespace UiAntiAfkKick;
@@ -21,7 +22,9 @@ public unsafe class AntiAfkKick : IDisposable
     private const uint WM_KEYDOWN = 0x100;
     private DalamudPluginInterface pluginInterface { get; set; }
     private Configuration configInterface { get; set; }
-
+    private Condition condition { get; set; }
+    private const string sigScan = "48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55";
+    
     delegate long UnkFunc(IntPtr a1, float a2);
     Hook<UnkFunc> UnkFuncHook;
 
@@ -30,6 +33,8 @@ public unsafe class AntiAfkKick : IDisposable
         this.pluginInterface = pluginInterface;
         configInterface = configuration;
         pluginInterface.Create<Svc>();
+        condition = Svc.Condition;
+        //baseAdress = Svc.SigScanner.ScanText(sigScan);
         UnkFuncHook = new(Svc.SigScanner.ScanText("48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55"), UnkFunc_Dtr);
         UnkFuncHook.Enable();
     }
@@ -46,6 +51,34 @@ public unsafe class AntiAfkKick : IDisposable
         }
         running = false;
     }
+
+    private void SendKey(float timer)
+    {
+        PluginLog.Debug($"Afk timers: {*afkTimer}/{*afkTimer2}/{*afkTimer3}");
+
+        if (timer < configInterface.Seconds)
+        {
+            return;
+        }
+
+        if (configInterface.Instance && !condition[ConditionFlag.BoundByDuty])
+        {
+            PluginLog.Debug("Not bound by duty - not sending");
+            return;
+        }
+
+        if (!EventsInterface.TryFindGameWindow(out var mwh))
+        {
+            PluginLog.Error("Could not find game window");
+            return;
+        }
+
+        PluginLog.Debug($"Afk timer before: {timer}");
+        PluginLog.Debug($"Sending anti-afk keypress: {mwh:X16}");
+        EventsInterface.SendKeystroke(mwh, LControlKey, 200, WM_KEYDOWN, WM_KEYUP);
+        PluginLog.Debug($"Afk timer after: {timer}");
+        
+    }
     
     private void BeginWork()
     {
@@ -56,30 +89,19 @@ public unsafe class AntiAfkKick : IDisposable
         {
             while (running)
             {
-                try
+                if (configInterface.Enabled)
                 {
-                    PluginLog.Debug($"Afk timers: {*afkTimer}/{*afkTimer2}/{*afkTimer3}");
-                    if (Max(*afkTimer, *afkTimer2, *afkTimer3) > configInterface.Seconds)
+                    try
                     {
-                        if (EventsInterface.TryFindGameWindow(out var mwh))
-                        {
-                            PluginLog.Debug($"Afk timer before: {*afkTimer}/{*afkTimer2}/{*afkTimer3}");
-                            PluginLog.Debug($"Sending anti-afk keypress: {mwh:X16}");
-                            EventsInterface.SendKeystroke(mwh, LControlKey, 200, WM_KEYDOWN, WM_KEYUP);
-                            PluginLog.Debug($"Afk timer after: {*afkTimer}/{*afkTimer2}/{*afkTimer3}");
-
-                        }
-                        else
-                        {
-                            PluginLog.Error("Could not find game window");
-                        }
+                        PluginLog.Debug($"Afk timers: {*afkTimer}/{*afkTimer2}/{*afkTimer3}");
+                        SendKey(Max(*afkTimer, *afkTimer2, *afkTimer3));
                     }
-                    Thread.Sleep((int)(1000 * (configInterface.Seconds+1)));
+                    catch (Exception e)
+                    {
+                        PluginLog.Error(e.Message + "\n" + e.StackTrace ?? "");
+                    }
                 }
-                catch (Exception e)
-                {
-                    PluginLog.Error(e.Message + "\n" + e.StackTrace ?? "");
-                }
+                Thread.Sleep((int)(1000 * (configInterface.Seconds / 2)));
             }
             PluginLog.Debug("Thread has stopped");
         }).Start();
