@@ -6,18 +6,11 @@ using System.Threading;
 namespace UiAntiAfkKick.Helpers;
 class EventsInterface
 {
-    private static Mutex mut = new Mutex();
-    private static EventsInterface instance;
+    private static readonly EventsInterface Instance = new EventsInterface();
 
     public static EventsInterface GetEventsInterface() // Singleton
     {
-        mut.WaitOne();
-        if (instance == null)
-        {
-            instance = new EventsInterface();
-        }
-        mut.ReleaseMutex();
-        return instance;
+        return Instance;
     }
     private EventsInterface()
     {
