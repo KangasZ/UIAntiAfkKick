@@ -32,10 +32,10 @@ public unsafe class AntiAfkKick : IDisposable
     {
         this.pluginInterface = pluginInterface;
         configInterface = configuration;
-        pluginInterface.Create<Svc>();
-        condition = Svc.Condition;
+        pluginInterface.Create<Services>();
+        condition = Services.Condition;
         //baseAdress = Svc.SigScanner.ScanText(sigScan);
-        UnkFuncHook = Hook<UnkFunc>.FromAddress(Svc.SigScanner.ScanText("48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55"), UnkFunc_Dtr);
+        UnkFuncHook = Hook<UnkFunc>.FromAddress(Services.SigScanner.ScanText("48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55"), UnkFunc_Dtr);
         UnkFuncHook.Enable();
     }
 
@@ -123,7 +123,7 @@ public unsafe class AntiAfkKick : IDisposable
                 PluginLog.Debug("Hook disposed");
             }
             BeginWork();
-        }, Svc.Framework);
+        }, Services.Framework);
         return UnkFuncHook.Original(a1, a2);
     }
 

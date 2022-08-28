@@ -16,8 +16,8 @@ public sealed class Plugin : IDalamudPlugin
     private Configuration configInterface { get; }
     private Ui pluginUi { get; }
     private AntiAfkKick afkThread;
-    
-    
+
+
     public Plugin(
         [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
         [RequiredVersion("1.0")] CommandManager commandManager)
@@ -36,7 +36,7 @@ public sealed class Plugin : IDalamudPlugin
             HelpMessage = "Opens configuration for anti afk plugin",
             ShowInHelp = true
         });
-        
+
         this.pluginInterface.UiBuilder.Draw += DrawUi;
         this.pluginInterface.UiBuilder.OpenConfigUi += OpenUi;
         afkThread = new AntiAfkKick(pluginInterface, configInterface);
@@ -47,7 +47,7 @@ public sealed class Plugin : IDalamudPlugin
         commandManager.RemoveHandler("/antiafk");
         afkThread.Dispose();
     }
-    
+
     private void SettingsCommand(string command, string args)
     {
         // in response to the slash command, just display our main ui

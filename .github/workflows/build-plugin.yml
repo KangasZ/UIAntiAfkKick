@@ -22,7 +22,7 @@ jobs:
         uses: NuGet/setup-nuget@v1.0.5
         
       - name: Restore NuGet Packages
-        run: nuget restore AntiAfkKick.sln
+        run: dotnet restore
 
       - name: Download Dalamud
         if: "!contains(github.event.head_commit.message, '[stg]')"
@@ -41,4 +41,4 @@ jobs:
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2.2.1
         with:
-          path: ./UIAntiAfkKick/bin/Release/*
+          path: ./UIAntiAfkKick/bin/x64/Release/*

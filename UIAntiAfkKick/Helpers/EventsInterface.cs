@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace UiAntiAfkKick.Helpers;
+
 class EventsInterface
 {
     private static readonly EventsInterface Instance = new EventsInterface();
@@ -12,29 +13,29 @@ class EventsInterface
     {
         return Instance;
     }
+
     private EventsInterface()
     {
         // This shouldnt be needed as most things are static. Just incase...
     }
+
     private struct LastInputInfo
     {
         public uint CbSize;
 
         public uint DwTime;
     }
-    
+
     public static void SendKeystroke(IntPtr hwnd, int key, int delayMs, uint messageOne, uint messageTwo)
     {
         new TickScheduler(delegate
         {
             SendMessage(hwnd, messageOne, (IntPtr)key, (IntPtr)0);
-            new TickScheduler(delegate
-            {
-                SendMessage(hwnd, messageTwo, (IntPtr)key, (IntPtr)0);
-            }, Svc.Framework, delayMs);
-        }, Svc.Framework, 0);
+            new TickScheduler(delegate { SendMessage(hwnd, messageTwo, (IntPtr)key, (IntPtr)0); }, Services.Framework,
+                delayMs);
+        }, Services.Framework, 0);
     }
-    
+
     public static uint GetIdleTime()
     {
         LastInputInfo lastInPut = new LastInputInfo();
@@ -52,6 +53,7 @@ class EventsInterface
         {
             throw new Exception(GetLastError().ToString());
         }
+
         return lastInPut.DwTime;
     }
 
@@ -62,6 +64,7 @@ class EventsInterface
         {
             hwnd = FindWindowEx(IntPtr.Zero, hwnd, "FFXIVGAME", null);
         } while (hwnd != IntPtr.Zero && GetProcessId(hwnd) != Process.GetCurrentProcess().Id);
+
         return hwnd != IntPtr.Zero;
     }
 
@@ -70,7 +73,7 @@ class EventsInterface
         GetWindowThreadProcessId(hWnd, out var pid);
         return pid;
     }
-    
+
     // DLL Imports
     [DllImport("user32.dll")]
     public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
@@ -82,12 +85,12 @@ class EventsInterface
     private static extern uint GetLastError();
 
     [DllImport("user32.dll")]
-    private static extern IntPtr FindWindowEx(IntPtr hWndParent, IntPtr hWndChildAfter, string lpszClass, string lpszWindow);
+    private static extern IntPtr FindWindowEx(IntPtr hWndParent, IntPtr hWndChildAfter, string lpszClass,
+        string lpszWindow);
 
     [DllImport("user32.dll")]
     private static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
-    
+
     [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
     public static extern IntPtr GetForegroundWindow();
-    
 }

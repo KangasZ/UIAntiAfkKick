@@ -30,10 +30,11 @@ internal class TickScheduler : IDisposable
         {
             function();
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             PluginLog.Error(e.Message + "\n" + e.StackTrace ?? "");
         }
+
         Dispose();
     }
 }

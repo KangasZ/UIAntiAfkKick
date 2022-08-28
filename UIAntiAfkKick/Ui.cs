@@ -11,6 +11,7 @@ class Ui
 
     // this extra bool exists for ImGui, since you can't ref a property
     private bool visible = false;
+
     public bool Visible
     {
         get { return this.visible; }
@@ -18,6 +19,7 @@ class Ui
     }
 
     private bool settingsVisible = false;
+
     public bool SettingsVisible
     {
         get { return settingsVisible; }
@@ -88,6 +90,7 @@ class Ui
 
             ImGui.Spacing();
         }
+
         ImGui.End();
     }
 }
