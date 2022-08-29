@@ -7,18 +7,6 @@ namespace UiAntiAfkKick.Helpers;
 
 class EventsInterface
 {
-    private static readonly EventsInterface Instance = new EventsInterface();
-
-    public static EventsInterface GetEventsInterface() // Singleton
-    {
-        return Instance;
-    }
-
-    private EventsInterface()
-    {
-        // This shouldnt be needed as most things are static. Just incase...
-    }
-
     private struct LastInputInfo
     {
         public uint CbSize;

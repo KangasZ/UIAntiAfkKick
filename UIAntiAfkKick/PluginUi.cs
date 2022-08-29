@@ -1,12 +1,13 @@
 ﻿using ImGuiNET;
 using System.Numerics;
+using Dalamud.Plugin;
 
 namespace UiAntiAfkKick;
 
-class Ui
+public class PluginUi
 {
     private Configuration configuration { get; set; }
-
+    private DalamudPluginInterface dalamudPluginInterface { get; set; }
     //private ImGuiScene.TextureWrap goatImage;
 
     // this extra bool exists for ImGui, since you can't ref a property
@@ -27,10 +28,12 @@ class Ui
     }
 
     // passing in the image here just for simplicity
-    public Ui(Configuration configuration)
+    public PluginUi(DalamudPluginInterface dalamudPluginInterface, Configuration configuration)
     {
         this.configuration = configuration;
-        //this.goatImage = goatImage;
+        this.dalamudPluginInterface = dalamudPluginInterface;
+        this.dalamudPluginInterface.UiBuilder.Draw += DrawUi;
+        this.dalamudPluginInterface.UiBuilder.OpenConfigUi += OpenUi;
     }
 
     public void Draw()
@@ -45,6 +48,16 @@ class Ui
         DrawMainWindow();
     }
 
+    public void DrawUi()
+    {
+        Draw();
+    }
+
+    public void OpenUi()
+    {
+        Visible = true;
+    }
+    
     public void DrawMainWindow()
     {
         if (!Visible)

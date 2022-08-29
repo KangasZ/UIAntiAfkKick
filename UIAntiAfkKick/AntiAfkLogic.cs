@@ -1,6 +1,5 @@
 ﻿using Dalamud.Hooking;
 using Dalamud.Logging;
-using Dalamud.Plugin;
 using System;
 using System.Linq;
 using System.Threading;
@@ -8,7 +7,7 @@ using Dalamud.Game.ClientState.Conditions;
 using UiAntiAfkKick.Helpers;
 
 namespace UiAntiAfkKick;
-public unsafe class AntiAfkKick : IDisposable
+public unsafe class AntiAfkLogic : IDisposable
 {
     internal volatile bool running = true;
     //long NextKeyPress = 0;
@@ -27,12 +26,14 @@ public unsafe class AntiAfkKick : IDisposable
     delegate long UnkFunc(IntPtr a1, float a2);
     Hook<UnkFunc> UnkFuncHook;
 
-    public AntiAfkKick(Configuration configuration)
+    public AntiAfkLogic(Configuration configuration)
     {
         configInterface = configuration;
-        //baseAdress = Svc.SigScanner.ScanText(sigScan);
+        PluginLog.Debug($"Anti AFK Thread Loading");
+
         UnkFuncHook = Hook<UnkFunc>.FromAddress(Services.SigScanner.ScanText("48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55"), UnkFunc_Dtr);
         UnkFuncHook.Enable();
+        PluginLog.Debug($"Anti AFK Thread Loaded");
     }
 
     public void Dispose()
