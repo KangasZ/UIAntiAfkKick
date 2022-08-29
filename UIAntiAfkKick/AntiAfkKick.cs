@@ -20,20 +20,16 @@ public unsafe class AntiAfkKick : IDisposable
     private const int Space = 32;
     private const uint WM_KEYUP = 0x101;
     private const uint WM_KEYDOWN = 0x100;
-    private DalamudPluginInterface pluginInterface { get; set; }
     private Configuration configInterface { get; set; }
-    private Condition condition { get; set; }
+    private Condition condition => Services.Condition;
     private const string sigScan = "48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55";
     
     delegate long UnkFunc(IntPtr a1, float a2);
     Hook<UnkFunc> UnkFuncHook;
 
-    public AntiAfkKick(DalamudPluginInterface pluginInterface, Configuration configuration)
+    public AntiAfkKick(Configuration configuration)
     {
-        this.pluginInterface = pluginInterface;
         configInterface = configuration;
-        pluginInterface.Create<Services>();
-        condition = Services.Condition;
         //baseAdress = Svc.SigScanner.ScanText(sigScan);
         UnkFuncHook = Hook<UnkFunc>.FromAddress(Services.SigScanner.ScanText("48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55"), UnkFunc_Dtr);
         UnkFuncHook.Enable();

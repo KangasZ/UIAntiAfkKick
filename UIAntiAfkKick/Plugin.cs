@@ -1,4 +1,5 @@
-﻿using Dalamud.Game.Command;
+﻿using System;
+using Dalamud.Game.Command;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 
@@ -23,6 +24,7 @@ public sealed class Plugin : IDalamudPlugin
         [RequiredVersion("1.0")] CommandManager commandManager)
     {
         this.pluginInterface = pluginInterface;
+        this.pluginInterface.Create<Services>();
         this.commandManager = commandManager;
 
         configInterface = this.pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
@@ -39,7 +41,7 @@ public sealed class Plugin : IDalamudPlugin
 
         this.pluginInterface.UiBuilder.Draw += DrawUi;
         this.pluginInterface.UiBuilder.OpenConfigUi += OpenUi;
-        afkThread = new AntiAfkKick(pluginInterface, configInterface);
+        afkThread = new AntiAfkKick(configInterface);
     }
 
     public void Dispose()
