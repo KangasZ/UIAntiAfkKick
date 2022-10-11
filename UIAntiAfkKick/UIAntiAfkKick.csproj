@@ -2,13 +2,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<Name>UI Anti AFK Kick</Name>
-		<Punchline>No more wiggle checks!</Punchline>
 		<Authors>KangasZ</Authors>
-		<Version>3.1.0.0</Version>
+		<Version>3.2.0.0</Version>
 		<RootNamespace>UiAntiAfkKick</RootNamespace>
-		<Description>Dont die\n/antiafk</Description>
 		<Copyright>None. Leave me alone</Copyright>
-		<PackageProjectUrl>https://github.com/KangasZ/UIAntiAfkKick</PackageProjectUrl>
 	</PropertyGroup>
 
 	<PropertyGroup>
