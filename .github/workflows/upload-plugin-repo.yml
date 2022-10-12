@@ -6,7 +6,7 @@ on:
       - '*'
 
 env:
-  SOLUTION_NAME: UIAntiAfkKick
+  SOLUTION_NAME: AntiAfkKick
   INTERNAL_NAME: UIAntiAfkKick
   RELEASE_DIR: ./UIAntiAfkKick/bin/x64/Release/UIAntiAfkKick
   PERSONAL_PLUGIN_REPO: KangasZ/DalamudPluginRepository
