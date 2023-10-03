@@ -2,6 +2,7 @@
 using Dalamud.Game.Command;
 using Dalamud.IoC;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 
 
 namespace UiAntiAfkKick;
@@ -13,7 +14,7 @@ public sealed class Plugin : IDalamudPlugin
     private const string commandName = "/antiafk";
 
     private DalamudPluginInterface pluginInterface { get; init; }
-    private CommandManager commandManager { get; init; }
+    private ICommandManager commandManager { get; init; }
     private Configuration configInterface { get; }
     private Ui pluginUi { get; }
     private AntiAfkKick afkThread;
@@ -21,7 +22,7 @@ public sealed class Plugin : IDalamudPlugin
 
     public Plugin(
         [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-        [RequiredVersion("1.0")] CommandManager commandManager)
+        [RequiredVersion("1.0")] ICommandManager commandManager)
     {
         this.pluginInterface = pluginInterface;
         this.pluginInterface.Create<Services>();

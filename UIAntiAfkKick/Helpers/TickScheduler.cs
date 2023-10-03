@@ -1,6 +1,7 @@
 ﻿using System;
 using Dalamud.Game;
 using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 
 namespace UiAntiAfkKick.Helpers;
 
@@ -8,9 +9,9 @@ internal class TickScheduler : IDisposable
 {
     private readonly long executeAt;
     private readonly Action function;
-    private readonly Framework framework;
+    private readonly IFramework framework;
 
-    public TickScheduler(Action function, Framework framework, long delayMs = 0)
+    public TickScheduler(Action function, IFramework framework, long delayMs = 0)
     {
         executeAt = Environment.TickCount64 + delayMs;
         this.function = function;

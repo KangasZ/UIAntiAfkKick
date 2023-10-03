@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using Dalamud.Game.ClientState.Conditions;
+using Dalamud.Plugin.Services;
 using UiAntiAfkKick.Helpers;
 
 namespace UiAntiAfkKick;
@@ -21,7 +22,8 @@ public unsafe class AntiAfkKick : IDisposable
     private const uint WM_KEYUP = 0x101;
     private const uint WM_KEYDOWN = 0x100;
     private Configuration configInterface { get; set; }
-    private Condition condition => Services.Condition;
+    private ICondition condition => Services.Condition;
+    private IGameInteropProvider gameInteropProvider => Services.GameInteropProvider;
     private const string sigScan = "48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55";
     
     delegate long UnkFunc(IntPtr a1, float a2);
@@ -31,7 +33,7 @@ public unsafe class AntiAfkKick : IDisposable
     {
         configInterface = configuration;
         //baseAdress = Svc.SigScanner.ScanText(sigScan);
-        UnkFuncHook = Hook<UnkFunc>.FromAddress(Services.SigScanner.ScanText("48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55"), UnkFunc_Dtr);
+        UnkFuncHook = gameInteropProvider.HookFromAddress<UnkFunc>(Services.SigScanner.ScanText("48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55"), UnkFunc_Dtr);
         UnkFuncHook.Enable();
     }
 
