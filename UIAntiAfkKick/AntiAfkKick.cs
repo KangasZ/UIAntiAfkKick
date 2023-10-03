@@ -23,7 +23,6 @@ public unsafe class AntiAfkKick : IDisposable
     private const uint WM_KEYDOWN = 0x100;
     private Configuration configInterface { get; set; }
     private ICondition condition => Services.Condition;
-    private IGameInteropProvider gameInteropProvider => Services.GameInteropProvider;
     private const string sigScan = "48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55";
     
     delegate long UnkFunc(IntPtr a1, float a2);
@@ -33,7 +32,7 @@ public unsafe class AntiAfkKick : IDisposable
     {
         configInterface = configuration;
         //baseAdress = Svc.SigScanner.ScanText(sigScan);
-        UnkFuncHook = gameInteropProvider.HookFromAddress<UnkFunc>(Services.SigScanner.ScanText("48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55"), UnkFunc_Dtr);
+        UnkFuncHook = Services.Hook.HookFromAddress<UnkFunc>(Services.SigScanner.ScanText("48 8B C4 48 89 58 18 48 89 70 20 55 57 41 55"), UnkFunc_Dtr);
         UnkFuncHook.Enable();
     }
 

@@ -11,5 +11,5 @@ class Services
     [PluginService] static internal ICondition Condition { get; private set; }
     [PluginService] static internal IFramework Framework { get; private set; }
     [PluginService] static internal ISigScanner SigScanner { get; private set; }
-    [PluginService] static internal IGameInteropProvider GameInteropProvider { get; private set; }
+    [PluginService] static internal IGameInteropProvider Hook { get; private set; }
 }
