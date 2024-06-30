@@ -27,10 +27,12 @@ public unsafe class AntiAfkKick : IDisposable
     
     delegate long UnkFunc(IntPtr a1, float a2);
     Hook<UnkFunc> UnkFuncHook;
+    private readonly IPluginLog PluginLog;
 
-    public AntiAfkKick(Configuration configuration)
+    public AntiAfkKick(Configuration configuration, IPluginLog pluginLog)
     {
         configInterface = configuration;
+        this.PluginLog = pluginLog;
         //baseAdress = Svc.SigScanner.ScanText(sigScan);
         UnkFuncHook = Services.Hook.HookFromAddress<UnkFunc>(Services.SigScanner.ScanText(sigScan), UnkFunc_Dtr);
         UnkFuncHook.Enable();
@@ -86,7 +88,7 @@ public unsafe class AntiAfkKick : IDisposable
         {
             while (running)
             {
-                if (configInterface.Enabled)
+                if (configInterface.Enabled) // todo: if the player exists in gameworld :)
                 {
                     try
                     {

@@ -33,7 +33,7 @@ internal class TickScheduler : IDisposable
         }
         catch (Exception e)
         {
-            PluginLog.Error(e.Message + "\n" + e.StackTrace ?? "");
+            //PluginLog.Error(e.Message + "\n" + e.StackTrace ?? "");
         }
 
         Dispose();

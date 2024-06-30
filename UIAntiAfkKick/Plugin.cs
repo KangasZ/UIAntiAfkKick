@@ -13,7 +13,7 @@ public sealed class Plugin : IDalamudPlugin
 
     private const string commandName = "/antiafk";
 
-    private DalamudPluginInterface pluginInterface { get; init; }
+    private IDalamudPluginInterface pluginInterface { get; init; }
     private ICommandManager commandManager { get; init; }
     private Configuration configInterface { get; }
     private Ui pluginUi { get; }
@@ -21,8 +21,9 @@ public sealed class Plugin : IDalamudPlugin
 
 
     public Plugin(
-        [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-        [RequiredVersion("1.0")] ICommandManager commandManager)
+        IDalamudPluginInterface pluginInterface,
+        ICommandManager commandManager,
+        IPluginLog pluginLog)
     {
         this.pluginInterface = pluginInterface;
         this.pluginInterface.Create<Services>();
@@ -42,7 +43,7 @@ public sealed class Plugin : IDalamudPlugin
 
         this.pluginInterface.UiBuilder.Draw += DrawUi;
         this.pluginInterface.UiBuilder.OpenConfigUi += OpenUi;
-        afkThread = new AntiAfkKick(configInterface);
+        afkThread = new AntiAfkKick(configInterface, pluginLog);
     }
 
     public void Dispose()
