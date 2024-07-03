@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.UI;
 using UiAntiAfkKick.Helpers;
 
 namespace UiAntiAfkKick;
@@ -23,38 +24,22 @@ public unsafe class AntiAfkKick : IDisposable
     private const uint WM_KEYDOWN = 0x100;
     private Configuration configInterface { get; set; }
     private ICondition condition => Services.Condition;
-    private const string sigScan = "48 8B C4 48 89 58 18 48 89 70 20 55 57 41 54 41 56 41 57 48 8D 68 A1";
-    
-    delegate long UnkFunc(IntPtr a1, float a2);
-    Hook<UnkFunc> UnkFuncHook;
     private readonly IPluginLog PluginLog;
 
     public AntiAfkKick(Configuration configuration, IPluginLog pluginLog)
     {
         configInterface = configuration;
         this.PluginLog = pluginLog;
-        //baseAdress = Svc.SigScanner.ScanText(sigScan);
-        UnkFuncHook = Services.Hook.HookFromAddress<UnkFunc>(Services.SigScanner.ScanText(sigScan), UnkFunc_Dtr);
-        UnkFuncHook.Enable();
+        BeginWork();
     }
 
     public void Dispose()
     {
-        if (!UnkFuncHook.IsDisposed)
-        {
-            if (UnkFuncHook.IsEnabled)
-            {
-                UnkFuncHook.Disable();
-            }
-            UnkFuncHook.Dispose();
-        }
         running = false;
     }
 
     private void SendKey(float timer)
     {
-        PluginLog.Debug($"Afk timers: {*afkTimer}/{*afkTimer2}/{*afkTimer3}");
-
         if (timer < configInterface.Seconds)
         {
             return;
@@ -81,9 +66,9 @@ public unsafe class AntiAfkKick : IDisposable
     
     private void BeginWork()
     {
-        afkTimer = (float*)(baseAddress + 20);
-        afkTimer2 = (float*)(baseAddress + 24);
-        afkTimer3 = (float*)(baseAddress + 28);
+        afkTimer = &UIModule.Instance()->GetInputTimerModule()->AfkTimer;
+        afkTimer2 = &UIModule.Instance()->GetInputTimerModule()->ContentInputTimer;
+        afkTimer3 = &UIModule.Instance()->GetInputTimerModule()->InputTimer;
         new Thread((ThreadStart)delegate
         {
             while (running)
@@ -104,26 +89,6 @@ public unsafe class AntiAfkKick : IDisposable
             }
             PluginLog.Debug("Thread has stopped");
         }).Start();
-    }
-
-    private long UnkFunc_Dtr(IntPtr a1, float a2)
-    {
-        baseAddress = a1;
-        PluginLog.Information($"Obtained base address: {baseAddress:X16}");
-        new TickScheduler(delegate 
-        {
-            if (!UnkFuncHook.IsDisposed)
-            {
-                if (UnkFuncHook.IsEnabled)
-                {
-                    UnkFuncHook.Disable();
-                }
-                UnkFuncHook.Dispose();
-                PluginLog.Debug("Hook disposed");
-            }
-            BeginWork();
-        }, Services.Framework);
-        return UnkFuncHook.Original(a1, a2);
     }
 
     private static float Max(params float[] values)
