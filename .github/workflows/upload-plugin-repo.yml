@@ -38,7 +38,7 @@ jobs:
         run: |
           Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/stg/latest.zip -OutFile latest.zip
           Expand-Archive -Force latest.zip "$env:AppData\XIVLauncher\addon\Hooks\dev"
-      - name: Download Dalamud temp
+      - name: Download Dalamud staging
         if: "contains(github.event.head_commit.message, '[api11]')"
         run: |
           Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/api11/latest.zip -OutFile latest.zip
@@ -48,7 +48,7 @@ jobs:
         run: msbuild ${{ env.SOLUTION_NAME }}.sln /p:Configuration=Release
 
       - name: Upload Build Artifact
-        uses: actions/upload-artifact@v2.2.1
+        uses: actions/upload-artifact@v4
         with:
           path: ${{ env.RELEASE_DIR }}/*
 
@@ -57,13 +57,13 @@ jobs:
     runs-on: [ubuntu-latest]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           repository: ${{ env.PERSONAL_PLUGIN_REPO }}
           token: ${{ secrets.PAT }}
           ref: ${{ env.BRANCH }}
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         with:
           name: artifact
           path: plugins/${{ env.INTERNAL_NAME }}
