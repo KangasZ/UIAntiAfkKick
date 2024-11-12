@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<Name>UI Anti AFK Kick</Name>
 		<Authors>KangasZ</Authors>
-		<Version>3.2.6.1</Version>
+		<Version>3.2.6.2</Version>
 		<RootNamespace>UiAntiAfkKick</RootNamespace>
 		<Copyright>None. Leave me alone</Copyright>
 	</PropertyGroup>
