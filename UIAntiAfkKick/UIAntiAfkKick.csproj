@@ -3,13 +3,13 @@
 	<PropertyGroup>
 		<Name>UI Anti AFK Kick</Name>
 		<Authors>KangasZ</Authors>
-		<Version>3.2.6.2</Version>
+		<Version>3.2.6.3</Version>
 		<RootNamespace>UiAntiAfkKick</RootNamespace>
 		<Copyright>None. Leave me alone</Copyright>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0-windows</TargetFramework>
 		<Platforms>x64</Platforms>
 		<Nullable>enable</Nullable>
 		<LangVersion>latest</LangVersion>
@@ -24,7 +24,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DalamudPackager" Version="11.0.0" />
+		<PackageReference Include="DalamudPackager" Version="12.0.0" />
 		<Reference Include="FFXIVClientStructs">
 			<HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
 			<Private>false</Private>

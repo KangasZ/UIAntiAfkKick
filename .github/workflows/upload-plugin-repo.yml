@@ -29,7 +29,7 @@ jobs:
         run: nuget restore ${{ env.SOLUTION_NAME }}.sln
 
       - name: Download Dalamud
-        if: "!contains(github.event.head_commit.message, '[stg]') && !contains(github.event.head_commit.message, '[api11]')"
+        if: "!contains(github.event.head_commit.message, '[stg]') && !contains(github.event.head_commit.message, '[api12]')"
         run: |
           Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/latest.zip -OutFile latest.zip
           Expand-Archive -Force latest.zip "$env:AppData\XIVLauncher\addon\Hooks\dev"
@@ -39,9 +39,9 @@ jobs:
           Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/stg/latest.zip -OutFile latest.zip
           Expand-Archive -Force latest.zip "$env:AppData\XIVLauncher\addon\Hooks\dev"
       - name: Download Dalamud 11
-        if: "contains(github.event.head_commit.message, '[api11]')"
+        if: "contains(github.event.head_commit.message, '[api12]')"
         run: |
-          Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/api11/latest.zip -OutFile latest.zip
+          Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/api12/latest.zip -OutFile latest.zip
           Expand-Archive -Force latest.zip "$env:AppData\XIVLauncher\addon\Hooks\dev"
 
       - name: Build
