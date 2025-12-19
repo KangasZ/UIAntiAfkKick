@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<Name>UI Anti AFK Kick</Name>
 		<Authors>KangasZ</Authors>
-		<Version>3.2.6.5</Version>
+		<Version>3.2.6.6</Version>
 		<RootNamespace>UiAntiAfkKick</RootNamespace>
 		<Copyright>None. Leave me alone</Copyright>
 	</PropertyGroup>
@@ -24,7 +24,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DalamudPackager" Version="13.0.0" />
+		<PackageReference Include="DalamudPackager" Version="14.0.1" />
 		<Reference Include="FFXIVClientStructs">
 			<HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
 			<Private>false</Private>
